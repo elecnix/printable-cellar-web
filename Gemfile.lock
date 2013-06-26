@@ -39,6 +39,7 @@ GEM
       execjs
     coffee-script-source (1.6.2)
     columnize (0.3.6)
+    dbm (0.0.0)
     debugger (1.6.0)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -135,6 +136,7 @@ PLATFORMS
 
 DEPENDENCIES
   coffee-rails (~> 3.2.1)
+  dbm
   debugger
   jquery-rails
   mechanize
