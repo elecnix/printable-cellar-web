@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'dbm'
 require 'rubygems'
 require 'mechanize'
 require 'rqrcode_png'
