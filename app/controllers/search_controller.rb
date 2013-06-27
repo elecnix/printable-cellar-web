@@ -66,7 +66,6 @@ class SearchController < ApplicationController
       :accords => page.css("span[class='recipes-name']").map { |node| node.content.strip }.join('. ').strip,
       :achat => '',
       :quantite => 1)
-    end
   end
 
 end
