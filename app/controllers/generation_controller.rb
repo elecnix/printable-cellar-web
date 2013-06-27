@@ -1,4 +1,5 @@
 # encoding: utf-8
+require 'rqrcode_png'
 
 class GenerationController < ApplicationController
 
