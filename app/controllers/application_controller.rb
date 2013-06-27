@@ -8,50 +8,37 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   class ScrapeCache
-    def initialize
-      @databases = Hash.new { |dbs, namespace| dbs[namespace] = DBM.open(namespace) }
-    end
-    def put(namespace, key, value)
+    def put(key, value)
       if value.nil?
-        puts "NULL PUT: #{key}"
-      elsif (value.include?("Votre session n'est pas valide"))
-        puts "INVALID PUT: #{key}"
+        logger.warn "NULL PUT: #{key}"
       else
-        @databases[namespace][key] = value.encode('utf-8')
+        page = CachedPage.new(:key => key, :value => value.encode('utf-8'))
+        page.save!
       end
     end
-    def get(namespace, key)
-      value = validate @databases[namespace][key.to_s]
+    def get(key)
+      value = CachedPage.where(key: key.to_s).order("created_at DESC").limit(1).first
+      value.value.force_encoding('utf-8') unless value.nil?
     end
-    def validate(value)
-      if (!value.nil? && value.include?("Votre session n'est pas valide"))
-        puts "INVALID CACHE: #{key}"
-        nil
-      elsif value.nil?
-        nil
-      else
-        value.force_encoding('utf-8')
-      end
-    end
-    def include?(namespace, key)
-      @databases[namespace].has_key?(key)
+    def include?(key)
+      CachedPage.where(key: key.to_s).empty?
     end
   end
 
   def get_page(cup)
     @cache = ScrapeCache.new
-    page_body = @cache.get('saq', cup)
+    page_body = @cache.get(cup)
     if (page_body.nil?)
-      puts "GET SAQ: #{cup}"
+      logger.info "GET SAQ: #{cup}"
       @agent = Mechanize.new
       @agent.default_encoding = 'utf-8'
       @agent.force_default_encoding = true
       page = @agent.get('http://www.saq.com/webapp/wcs/stores/servlet/SearchDisplay?storeId=20002&catalogId=50000&langId=-2&pageSize=20&beginIndex=0&searchTerm=' + cup)
-      @cache.put('saq', cup, page.parser.to_s)
+      @cache.put(cup, page.parser.to_s)
       sleep 1
       page.parser
     else
-      puts "CACHE SAQ: #{cup}"
+      logger.info "CACHE SAQ: #{cup}"
       Nokogiri::HTML::Document.parse(page_body)
     end
   end
