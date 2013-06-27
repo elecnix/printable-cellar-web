@@ -27,8 +27,8 @@ class SearchController < ApplicationController
       @agent.default_encoding = 'utf-8'
       @agent.force_default_encoding = true
       page = @agent.get('http://www.saq.com/webapp/wcs/stores/servlet/SearchDisplay?storeId=20002&catalogId=50000&langId=-2&pageSize=20&beginIndex=0&searchTerm=' + cup)
-      page = CachedPage.new(:key => cup, :value => page.parser.to_s.encode('utf-8'))
-      page.save!
+      cached_page = CachedPage.new(:key => cup, :value => page.parser.to_s.encode('utf-8'))
+      cached_page.save!
       sleep 1
       page.parser
     else
@@ -48,7 +48,7 @@ class SearchController < ApplicationController
     details = Hash[page.css("#details/ul/li/div").map { |node| node.content.gsub(/\r\n?/, " ").gsub(/\s+/, ' ').strip }.each_slice(2).to_a]
     # {"Pays"=>"France", "Région"=>"Sud-Ouest", "Appellation d'origine"=>"Cahors", "Désignation réglementée"=>"AOC", "Producteur"=>"...", "Cépage(s)"=>"Malbec 100 %", "couleur"=>"Rouge", "Format"=>"750 ml  ", "Degré d'alcool"=>"13 %", "Type de bouchon"=>"Liège", "Type de contenant"=>"Verre"}
     temp_spacer = page.css('#tasting/div/p/span').first
-    garde = page.css('#tasting/div/table').first.content.strip
+    garde = page.css('#tasting/div/table').first
     return Vin.new(:cup => cup,
       :nom => page.css('.product-description-title').first.content.strip,
       :saq => page.css('.product-description-code-saq').first.next_sibling.content.strip,
@@ -59,13 +59,14 @@ class SearchController < ApplicationController
       :millesime => '',
       :pastille => '', #page.css('.prod-pastille/img').first['alt'].sub(/.*: /, '').strip,
       :degustation => page.css('#tasting/div/p').map { |node| node.content.strip }.join(' ').strip,
-      :garde => garde,
-      :boire => garde.sub(/.*garder (.+) ans.*/, '\1').to_i,
-      :temperature => (temp_spacer.previous_sibling.content.strip + " " + " " + temp_spacer.next_sibling.content.strip).gsub(/\r\n?/, " ").gsub(/\s+/, ' ').sub(/De :/, '').sub(/°C À :/, ' -').strip,
+      :garde => (garde.content.strip if garde),
+      :boire => (garde.content.strip.sub(/.*garder (.+) ans.*/, '\1').to_i if garde),
+      :temperature => ((temp_spacer.previous_sibling.content.strip + " " + " " + temp_spacer.next_sibling.content.strip).gsub(/\r\n?/, " ").gsub(/\s+/, ' ').sub(/De :/, '').sub(/°C À :/, ' -').strip if temp_spacer),
       :prix => page.css('.price').first.content.strip,
       :accords => page.css("span[class='recipes-name']").map { |node| node.content.strip }.join('. ').strip,
       :achat => '',
       :quantite => 1)
+    end
   end
 
 end
