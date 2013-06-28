@@ -33,7 +33,7 @@ class GenerationController < ApplicationController
     content = ""
     Zip::ZipFile.open(src_odg, false) { |zipfile|
       puts "Replace..."
-      content = zipfile.read("content.xml").encode
+      content = zipfile.read("content.xml").force_encoding('utf-8')
     }
     puts "content.xml has #{content.size}"
     params['wine'].values.each_slice(3) do |row|
