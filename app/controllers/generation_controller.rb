@@ -1,5 +1,6 @@
 # encoding: utf-8
 require 'rqrcode_png'
+require 'zip/zip'
 
 class GenerationController < ApplicationController
 
@@ -24,33 +25,30 @@ class GenerationController < ApplicationController
 
   def new
     src_odg = "app/printable-cellar-legal-fr.odg"
-    tmp = SecureRandom.urlsafe_base64
-    tmp_dir = Rails.root.join('tmp', tmp)
-    puts "Writing to #{tmp_dir}"
-    puts `mkdir -p "#{tmp_dir}"`
-    puts "Unzip..."
-    puts `unzip "#{src_odg}" content.xml -d "#{tmp_dir}"`
-    puts "Replace..."
-    content = File.read("#{tmp_dir}/content.xml")
+    date = DateTime.now.strftime('%F')
+    random = SecureRandom.urlsafe_base64[0..7]
+    tmp_file = Rails.root.join('tmp', "printable-cellar-" + date + "-" + random + ".odg")
+    puts "Copying to #{tmp_file}"
+    puts `cp "#{src_odg}" "#{tmp_file}"`
+    content = ""
+    Zip::ZipFile.open(src_odg, false) { |zipfile|
+      puts "Replace..."
+      content = zipfile.read("content.xml").encode
+    }
     puts "content.xml has #{content.size}"
     params['wine'].values.each_slice(3) do |row|
       row_wines = row.map { |wine_attributes| Vin.new(wine_attributes) }
       row_wines.each { |wine| replace_recto(wine, content) }
       row_wines.reverse_each { |wine| replace_verso(wine, content) }
     end
-    
     # Fill the rest of the page, if any
     empty = Vin.new
     (1..9).each { replace_recto(empty, content) ; replace_verso(empty, content) }
     
-    File.open("#{tmp_dir}/content.xml", "w") { |file| file.puts content }
-    puts "Copy..."
-    puts `cp "#{src_odg}" "#{tmp_dir}/fiche.odg"`
-    puts "chmod..."
-    puts `chmod u+w "#{tmp_dir}/fiche.odg"`
-    puts "Zip..."
-    puts `zip -j -r "#{tmp_dir}/fiche.odg" "#{tmp_dir}/content.xml"`
+    Zip::ZipFile.open(tmp_file, false) { |zipfile|
+      zipfile.get_output_stream("content.xml") { |f| f.puts content }
+    }
     puts "Send..."
-    send_file "#{tmp_dir}/fiche.odg"
+    send_file(tmp_file)
   end
 end
