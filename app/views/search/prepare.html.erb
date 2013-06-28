@@ -1,5 +1,5 @@
 <h1>Préparation des étiquettes</h1>
-Trouvé <%=@wine_batch.wines.size%> vins.
+Trouvé <%=@wine_batch.wines.size%> vins. <a href='/'>Nouvelle recherche</a>
 
 <% 1.upto(@wine_batch.wines.size).each_slice(9).to_a.each do |sheet| %>
   <%= form_tag('/generate', :method => "post") do %>
