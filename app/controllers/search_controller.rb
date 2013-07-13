@@ -49,7 +49,8 @@ class SearchController < ApplicationController
     # {"Pays"=>"France", "Région"=>"Sud-Ouest", "Appellation d'origine"=>"Cahors", "Désignation réglementée"=>"AOC", "Producteur"=>"...", "Cépage(s)"=>"Malbec 100 %", "couleur"=>"Rouge", "Format"=>"750 ml  ", "Degré d'alcool"=>"13 %", "Type de bouchon"=>"Liège", "Type de contenant"=>"Verre"}
     temp_spacer = page.css('#tasting/div/p/span').first
     garde = page.css('#tasting/div/table').first
-    return Vin.new(:cup => cup,
+    attributes = {
+      :cup => cup,
       :nom => page.css('.product-description-title').first.content.strip,
       :saq => page.css('.product-description-code-saq').first.next_sibling.content.strip,
       :pays => page.css('.product-page-subtitle').first.content.strip,
@@ -62,10 +63,17 @@ class SearchController < ApplicationController
       :garde => (garde.content.strip if garde),
       :boire => (garde.content.strip.sub(/.*garder (.+) ans.*/, '\1').to_i if garde),
       :temperature => ((temp_spacer.previous_sibling.content.strip + " " + " " + temp_spacer.next_sibling.content.strip).gsub(/\r\n?/, " ").gsub(/\s+/, ' ').sub(/De :/, '').sub(/°C À :/, ' -').strip if temp_spacer),
-      :prix => page.css('.price').first.content.strip,
       :accords => page.css("span[class='recipes-name']").map { |node| node.content.strip }.join('. ').strip,
-      :achat => '',
-      :quantite => 1)
+      :quantite => 1
+    }
+    if (page.css('.price-rebate').first)
+      attributes[:prix] = page.css('.initialprice').first.content.strip
+      attributes[:achat] = page.css('.price-rebate').first.content.strip
+    else
+      attributes[:prix] = page.css('.price').first.content.strip
+      attributes[:achat] = ''
+    end
+    return Vin.new(attributes)
   end
 
 end
