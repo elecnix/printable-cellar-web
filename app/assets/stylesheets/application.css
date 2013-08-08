@@ -74,4 +74,7 @@ input:focus, textarea:focus{
 	background:#555;
 	border:1px solid #353535;
 }
-
+#footer {
+  margin-top: 1em;
+	font-size: 12px;
+}
