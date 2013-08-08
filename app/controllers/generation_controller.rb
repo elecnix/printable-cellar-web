@@ -24,6 +24,12 @@ class GenerationController < ApplicationController
   end
 
   def new
+    # Create an array with 9 wines (full sheet)
+    wine_sheet = params['wine'].values.map { |wine_attributes| Vin.new(wine_attributes) }
+    # Fill the rest of the page with empty wine info
+    wine_sheet.fill(wine_sheet.length, 9) { |i| Vin.new }
+
+    # Load LibreOffice document (un-zip)
     src_odg = "app/printable-cellar-legal-fr.odg"
     date = DateTime.now.strftime('%F')
     random = SecureRandom.urlsafe_base64[0..7]
@@ -32,19 +38,18 @@ class GenerationController < ApplicationController
     puts `cp "#{src_odg}" "#{tmp_file}"`
     content = ""
     Zip::ZipFile.open(src_odg, false) { |zipfile|
-      puts "Replace..."
+      puts "Replacing..."
       content = zipfile.read("content.xml").force_encoding('utf-8')
     }
     puts "content.xml has #{content.size}"
-    params['wine'].values.each_slice(3) do |row|
-      row_wines = row.map { |wine_attributes| Vin.new(wine_attributes) }
+
+    # Perform replacement in the document
+    wine_sheet.each_slice(3) do |row_wines|
       row_wines.each { |wine| replace_recto(wine, content) }
       row_wines.reverse_each { |wine| replace_verso(wine, content) }
     end
-    # Fill the rest of the page, if any
-    empty = Vin.new
-    (1..9).each { replace_recto(empty, content) ; replace_verso(empty, content) }
-    
+
+    # Re-zip document and send it
     Zip::ZipFile.open(tmp_file, false) { |zipfile|
       zipfile.get_output_stream("content.xml") { |f| f.puts content }
     }
