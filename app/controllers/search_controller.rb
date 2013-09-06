@@ -39,7 +39,6 @@ class SearchController < ApplicationController
   end
 
   def get_wine(cup)
-    cup = cup.rjust(14, '0')
     page = get_page(cup)
     unless page.css('.product-description-title').first
       logger.error("No product description found for " + cup)
