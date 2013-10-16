@@ -16,6 +16,28 @@ class GenerationController < ApplicationController
     content.sub!(/\$prix/, escape(wine.prix))
     content.sub!(/\$temperature/, escape(wine.temperature))
     content.sub!(/\$accords/, escape(wine.accords))
+    
+    # <draw:frame draw:name="rond" draw:style-name="gr1" draw:text-style-name="P1" draw:layer="layout" svg:width="2.767cm" svg:height="2.767cm" svg:x="12.495cm" svg:y="7.563cm">
+    # <draw:image xlink:href="Pictures/100002010000028E0000028EFE59EE7F.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad">
+    # <text:p/>
+    # </draw:image>
+    # </draw:frame>
+    
+    # Expression:
+    # s/<draw:frame draw:name="blanc-aromatique-rond" .*</draw:frame>// 
+
+    #name="blanc-aromatique-rond"
+    #name="blanc-delicat-leger"
+    #name="blanc-fruite-doux"
+    #name="blanc-fruite-vif"
+    #name="rose-fruite-doux"
+    #name="rose-fruite-genereux"
+    #name="rose-fruite-leger"
+    #name="rouge-aromatique-charnu"
+    #name="rouge-aromatique-souple"
+    #name="rouge-fruite-genereux"
+    #name="rouge-fruite-leger"
+
   end
   def replace_verso(wine, content)
     content.sub!(/\$alcool/, escape(wine.alcool))
