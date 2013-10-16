@@ -1,4 +1,4 @@
-== Générateur d'étiquettes pour la Société des alcools du Québec
+# Générateur d'étiquettes pour la Société des alcools du Québec
 
 Ceci est une application web en Rails qui sert à générer des étiquettes du Célier imprimable.
 
