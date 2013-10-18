@@ -50,14 +50,14 @@ class SearchController < ApplicationController
     garde = page.css('#tasting/div/table').first
     attributes = {
       :cup => cup,
-      :nom => page.css('.product-description-title').first.content.strip,
-      :saq => page.css('.product-description-code-saq').first.next_sibling.content.strip,
-      :pays => page.css('.product-page-subtitle').first.content.strip,
+      :nom => page.at_css('.product-description-title').content.strip,
+      :saq => page.at_css('.product-description-code-saq').next_sibling.content.strip,
+      :pays => page.at_css('.product-page-subtitle').content.strip,
       :cepage => details["Cépage(s)"].to_s.sub(/ 100.?%/, ''),
       :alcool => details["Degré d'alcool"],
       :region => details["Région"],
       :millesime => '',
-      :pastille => '', #page.css('.prod-pastille/img').first['alt'].sub(/.*: /, '').strip,
+      :pastille => page.xpath("//table[@class='product-description-table']/tr/td/a/img").first['src'].sub(/.*\/(..)-g_fr.png/, '\1'),
       :degustation => page.css('#tasting/div/p').map { |node| node.content.strip }.join(' ').strip,
       :garde => (garde.content.strip if garde),
       :boire => (garde.content.strip.sub(/.*garder (.+) ans.*/, '\1').to_i if garde),
@@ -66,10 +66,10 @@ class SearchController < ApplicationController
       :quantite => 1
     }
     if (page.css('.price-rebate').first)
-      attributes[:prix] = page.css('.initialprice').first.content.strip
-      attributes[:achat] = page.css('.price-rebate').first.content.strip
+      attributes[:prix] = page.at_css('.initialprice').content.strip
+      attributes[:achat] = page.at_css('.price-rebate').content.strip
     else
-      attributes[:prix] = page.css('.price').first.content.strip
+      attributes[:prix] = page.at_css('.price').content.strip
       attributes[:achat] = ''
     end
     return Vin.new(attributes)

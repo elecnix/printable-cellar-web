@@ -74,6 +74,10 @@ input:focus, textarea:focus{
 	background:#555;
 	border:1px solid #353535;
 }
+.taste-tag-s {
+  width: 21px;
+  padding-left: 20px;
+}
 #footer {
   margin-top: 1em;
 	font-size: 12px;

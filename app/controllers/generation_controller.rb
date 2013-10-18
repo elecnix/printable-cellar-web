@@ -16,33 +16,32 @@ class GenerationController < ApplicationController
     content.sub!(/\$prix/, escape(wine.prix))
     content.sub!(/\$temperature/, escape(wine.temperature))
     content.sub!(/\$accords/, escape(wine.accords))
-    
-    # <draw:frame draw:name="rond" draw:style-name="gr1" draw:text-style-name="P1" draw:layer="layout" svg:width="2.767cm" svg:height="2.767cm" svg:x="12.495cm" svg:y="7.563cm">
-    # <draw:image xlink:href="Pictures/100002010000028E0000028EFE59EE7F.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad">
-    # <text:p/>
-    # </draw:image>
-    # </draw:frame>
-    
-    # Expression:
-    # s/<draw:frame draw:name="blanc-aromatique-rond" .*</draw:frame>// 
-
-    #name="blanc-aromatique-rond"
-    #name="blanc-delicat-leger"
-    #name="blanc-fruite-doux"
-    #name="blanc-fruite-vif"
-    #name="rose-fruite-doux"
-    #name="rose-fruite-genereux"
-    #name="rose-fruite-leger"
-    #name="rouge-aromatique-charnu"
-    #name="rouge-aromatique-souple"
-    #name="rouge-fruite-genereux"
-    #name="rouge-fruite-leger"
-
   end
   def replace_verso(wine, content)
     content.sub!(/\$alcool/, escape(wine.alcool))
     content.sub!(/\$degustation/, escape(wine.degustation))
     content.sub!(/\$achat/, escape(wine.achat))
+  end
+  def replace_tags(wines, content)
+    # Remove taste tags that do not match the current wine
+    # A taste tag looks like this in the ODF document: 
+    #   <draw:frame draw:name="blanc-aromatique-rond" draw:style-name="gr1" draw:text-style-name="P1" draw:layer="layout" svg:width="2.767cm" svg:height="2.767cm" svg:x="12.495cm" svg:y="7.563cm">
+    #     <draw:image xlink:href="Pictures/100002010000028E0000028EFE59EE7F.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad">
+    #       <text:p/>
+    #     </draw:image>
+    #   </draw:frame>
+    wine_tags = wines.map { |wine|
+      tag = TasteTag::MAPPINGS[wine.pastille]
+      tag[0] if tag
+    }
+    i = -1
+    tag_counts = Hash.new(0)
+    content.gsub!(/(<draw:frame draw:name="(.*?)" .*?<\/draw:frame>)/) { |p|
+      i = i + 1
+      tag_counts[$2] += 1
+      logger.info("#{i}. #{$2}[#{tag_counts[$2]}] =? #{wine_tags[tag_counts[$2] - 1]}")
+      $1 if $2 == wine_tags[tag_counts[$2] - 1]
+    }
   end
 
   def new
@@ -70,6 +69,7 @@ class GenerationController < ApplicationController
       row_wines.each { |wine| replace_recto(wine, content) }
       row_wines.reverse_each { |wine| replace_verso(wine, content) }
     end
+    replace_tags(wine_sheet, content)
 
     # Re-zip document and send it
     Zip::ZipFile.open(tmp_file, false) { |zipfile|

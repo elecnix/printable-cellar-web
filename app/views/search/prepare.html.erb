@@ -16,13 +16,17 @@ Trouvé <%=@wine_batch.wines.size%> vins. <a href='/'>Nouvelle recherche</a>
         <th>Garder (ans)</th>
         <th>Alcool</th>
         <th>Service</th>
+        <th>Pastille</th>
         <th>Dégustation</th>
         <th>Accords</th>
       </tr>
       <% sheet.each do |i| %>
         <% wine = @wine_batch.wines[i-1] %>
         <tr>
-          <td><a href='<%=wine.url%>'><%=wine.cup%></a></td>
+          <td>
+            <a href='<%=wine.url%>'><%=wine.cup%></a>
+            <%=hidden_field_tag("wine[#{i}][cup]", wine.cup)%>
+          </td>
           <td><%=text_field_tag("wine[#{i}][nom]", wine.nom, :size => 30)%></td>
           <td><%=text_field_tag("wine[#{i}][millesime]", wine.millesime, :size => 6)%></td>
           <td><%=text_field_tag("wine[#{i}][pays]", wine.pays, :size => 10)%></td>
@@ -33,6 +37,10 @@ Trouvé <%=@wine_batch.wines.size%> vins. <a href='/'>Nouvelle recherche</a>
           <td><%=text_field_tag("wine[#{i}][boire]", if wine.boire == 0 then "maintenant" else "< #{wine.boire} ans" end, :size => 6)%></td>
           <td><%=text_field_tag("wine[#{i}][alcool]", wine.alcool, :size => 3)%></td>
           <td><%=text_field_tag("wine[#{i}][temperature]", wine.temperature, :size => 10)%></td>
+          <td>
+            <%=taste_tag(wine.pastille)%>
+            <%=hidden_field_tag("wine[#{i}][pastille]", wine.pastille)%>
+          </td>
           <td><%=text_field_tag("wine[#{i}][degustation]", wine.degustation, :size => 30)%></td>
           <td><%=text_field_tag("wine[#{i}][accords]", wine.accords, :size => 30)%></td>
           <!-- <td><%=image_tag("/qr/30/#{wine.cup}.png", :alt => wine.cup) %></td> -->
