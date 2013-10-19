@@ -33,10 +33,10 @@ Trouvé <%=@wine_batch.wines.size%> vins. <a href='/'>Nouvelle recherche</a>
           <td><%=text_field_tag("wine[#{i}][prix]", wine.prix, :size => 6)%></td>
           <td><%=text_field_tag("wine[#{i}][achat]", wine.achat, :size => 6)%></td>
           <!-- <td><%=text_field_tag("wine[#{i}][quantite]", wine.quantite, :size => 3)%></td> -->
-          <td><%=text_field_tag("wine[#{i}][cepage]", wine.cepage.to_s.gsub(/.50.%/, ',').gsub(/ %/, '%'), :size => 10)%></td>
+          <td><%=text_field_tag("wine[#{i}][cepage]", wine.cepage.to_s.gsub(/.50.%/, ',').gsub(/ %/, '%'), :size => 20)%></td>
           <td><%=text_field_tag("wine[#{i}][boire]", if wine.boire == 0 then "maintenant" else "< #{wine.boire} ans" end, :size => 6)%></td>
-          <td><%=text_field_tag("wine[#{i}][alcool]", wine.alcool, :size => 3)%></td>
-          <td><%=text_field_tag("wine[#{i}][temperature]", wine.temperature, :size => 10)%></td>
+          <td><%=text_field_tag("wine[#{i}][alcool]", wine.alcool, :size => 5)%></td>
+          <td><%=text_field_tag("wine[#{i}][temperature]", wine.temperature, :size => 7)%></td>
           <td>
             <%=taste_tag(wine.pastille)%>
             <%=hidden_field_tag("wine[#{i}][pastille]", wine.pastille)%>
