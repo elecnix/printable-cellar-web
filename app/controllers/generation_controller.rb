@@ -39,7 +39,6 @@ class GenerationController < ApplicationController
     content.gsub!(/(<draw:frame draw:name="(.*?)" .*?<\/draw:frame>)/) { |p|
       i = i + 1
       tag_counts[$2] += 1
-      logger.info("#{i}. #{$2}[#{tag_counts[$2]}] =? #{wine_tags[tag_counts[$2] - 1]}")
       $1 if $2 == wine_tags[tag_counts[$2] - 1]
     }
   end
