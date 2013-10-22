@@ -16,7 +16,7 @@ class GenerationController < ApplicationController
     content.sub!(/\$prix/, escape(wine.prix))
     content.sub!(/\$temperature/, escape(wine.temperature))
     content.sub!(/\$accords/, escape(wine.accords))
-    content.sub!(/10000000000000CB000000CB4F4C2532.png/, "#{wine.cup || 'empty'}.png")
+    content.sub!(/10000000000000CB000000CB4F4C2532.png/, "#{wine.cup || 'qr-empty'}.png")
   end
   def replace_verso(wine, content)
     content.sub!(/\$alcool/, escape(wine.alcool))
@@ -72,18 +72,24 @@ class GenerationController < ApplicationController
       row_wines.reverse_each { |wine| replace_verso(wine, content) }
     end
     replace_tags(wine_sheet, content)
+
+    def append_manifest(manifest_xml, picture)
+      manifest_xml.sub!(/(<\/manifest:manifest>)/, "<manifest:file-entry manifest:full-path=\"Pictures/#{picture}\" manifest:media-type=\"\"/>\\1")
+    end
     
     # Add QR codes files to Jar manifest
     wine_sheet.each do |wine|
       if wine.cup
-        manifest.sub!(/(<\/manifest:manifest>)/, "<manifest:file-entry manifest:full-path=\"Pictures/#{wine.cup}.png\" manifest:media-type=\"\"/>\\1")
+        append_manifest(manifest, "#{wine.cup}.png")
       end
     end
+    append_manifest(manifest, "qr-empty.png")
 
     # Re-zip document and send it
     Zip::ZipFile.open(tmp_file, false) { |zipfile|
       zipfile.get_output_stream("content.xml") { |f| f.puts content }
       zipfile.get_output_stream("META-INF/manifest.xml") { |f| f.puts manifest }
+      zipfile.add("Pictures/qr-empty.png", "app/qr-empty.png") 
       wine_sheet.each do |wine|
         if wine.cup
           zipfile.get_output_stream("Pictures/#{wine.cup}.png") { |f|
