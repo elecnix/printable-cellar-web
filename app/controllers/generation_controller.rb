@@ -16,6 +16,7 @@ class GenerationController < ApplicationController
     content.sub!(/\$prix/, escape(wine.prix))
     content.sub!(/\$temperature/, escape(wine.temperature))
     content.sub!(/\$accords/, escape(wine.accords))
+    content.sub!(/10000000000000CB000000CB4F4C2532.png/, "#{wine.cup || 'empty'}.png")
   end
   def replace_verso(wine, content)
     content.sub!(/\$alcool/, escape(wine.alcool))
@@ -39,7 +40,7 @@ class GenerationController < ApplicationController
     content.gsub!(/(<draw:frame draw:name="(.*?)" .*?<\/draw:frame>)/) { |p|
       i = i + 1
       tag_counts[$2] += 1
-      $1 if $2 == wine_tags[tag_counts[$2] - 1]
+      $1 if $2 == wine_tags[tag_counts[$2] - 1] || $2 == "qr"
     }
   end
 
@@ -57,9 +58,11 @@ class GenerationController < ApplicationController
     puts "Copying to #{tmp_file}"
     puts `cp "#{src_odg}" "#{tmp_file}"`
     content = ""
+    manifest = ""
     Zip::ZipFile.open(src_odg, false) { |zipfile|
       puts "Replacing..."
       content = zipfile.read("content.xml").force_encoding('utf-8')
+      manifest = zipfile.read("META-INF/manifest.xml").force_encoding('utf-8')
     }
     puts "content.xml has #{content.size}"
 
@@ -69,12 +72,29 @@ class GenerationController < ApplicationController
       row_wines.reverse_each { |wine| replace_verso(wine, content) }
     end
     replace_tags(wine_sheet, content)
+    
+    # Add QR codes files to Jar manifest
+    wine_sheet.each do |wine|
+      if wine.cup
+        manifest.sub!(/(<\/manifest:manifest>)/, "<manifest:file-entry manifest:full-path=\"Pictures/#{wine.cup}.png\" manifest:media-type=\"\"/>\\1")
+      end
+    end
 
     # Re-zip document and send it
     Zip::ZipFile.open(tmp_file, false) { |zipfile|
       zipfile.get_output_stream("content.xml") { |f| f.puts content }
+      zipfile.get_output_stream("META-INF/manifest.xml") { |f| f.puts manifest }
+      wine_sheet.each do |wine|
+        if wine.cup
+          zipfile.get_output_stream("Pictures/#{wine.cup}.png") { |f|
+            qr = RQRCode::QRCode.new(wine.cup, :size => 1, :level => :l)
+            qr.to_img.resize(200, 200).save(f)
+          }
+        end
+      end
     }
     puts "Send..."
     send_file(tmp_file)
+    # TODO remove temporary file
   end
 end
