@@ -75,8 +75,12 @@ input:focus, textarea:focus{
 	border:1px solid #353535;
 }
 .taste-tag-s {
-  width: 21px;
-  padding-left: 20px;
+  width: 45px;
+  padding-left: 10px;
+}
+textarea.degustation, textarea.accords {
+  width: 20em;
+  height: 17em;
 }
 #footer {
   margin-top: 1em;

@@ -9,46 +9,103 @@
     <table>
       <tr>
         <th>CUP</th>
-        <th>Nom</th>
-        <th>Millésime</th>
-        <th>Pays</th>
-        <th>Prix</th>
-        <th>Prix Payé</th>
-        <!-- <th>Quantité</th> -->
-        <th>Cépage</th>
-        <th>Garder (ans)</th>
-        <th>Alcool</th>
-        <th>Service</th>
-        <th>Pastille</th>
-        <th>Dégustation</th>
-        <th>Accords</th>
-      </tr>
-      <% sheet.each do |i| %>
-        <% wine = @wine_batch.wines[i-1] %>
-        <tr>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
           <td>
             <a href='<%=wine.url%>'><%=wine.cup%></a>
             <%=hidden_field_tag("wine[#{i}][cup]", wine.cup)%>
           </td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Nom</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
           <td><%=text_field_tag("wine[#{i}][nom]", wine.nom, :size => 30)%></td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Millésime</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
           <td><%=text_field_tag("wine[#{i}][millesime]", wine.millesime, :size => 6)%></td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Pays</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
           <td><%=text_field_tag("wine[#{i}][pays]", wine.pays, :size => 10)%></td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Prix</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
           <td><%=text_field_tag("wine[#{i}][prix]", number_to_currency_qc_fr(wine.prix), :size => 6)%></td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Prix Payé</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
           <td><%=text_field_tag("wine[#{i}][achat]", number_to_currency_qc_fr(wine.achat) + (wine.rebate_percent > 0 ? ' (-' + number_to_percentage(wine.rebate_percent, :precision=>0) + ')' : ''))%></td>
-          <!-- <td><%=text_field_tag("wine[#{i}][quantite]", wine.quantite, :size => 3)%></td> -->
+        <% end %>
+        <!-- <th>Quantité</th> -->
+          <!-- <td>text_field_tag("wine[#{i}][quantite]", wine.quantite, :size => 3)</td> -->
+      </tr>
+      <tr>
+        <th>Cépage</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
           <td><%=text_field_tag("wine[#{i}][cepage]", wine.cepage.to_s.gsub(/.50.%/, ',').gsub(/ %/, '%'), :size => 20)%></td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Garder (ans)</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
           <td><%=text_field_tag("wine[#{i}][boire]", if wine.boire == 0 then "maintenant" else "< #{wine.boire} ans" end, :size => 6)%></td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Alcool</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
           <td><%=text_field_tag("wine[#{i}][alcool]", wine.alcool, :size => 5)%></td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Service</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
           <td><%=text_field_tag("wine[#{i}][temperature]", wine.temperature, :size => 7)%></td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Pastille</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
           <td>
             <%=taste_tag(wine.pastille)%>
             <%=hidden_field_tag("wine[#{i}][pastille]", wine.pastille)%>
           </td>
-          <td><%=text_field_tag("wine[#{i}][degustation]", wine.degustation, :size => 30)%></td>
-          <td><%=text_field_tag("wine[#{i}][accords]", wine.accords, :size => 30)%></td>
-          <!-- <td><%=image_tag("/qr/30/#{wine.cup}.png", :alt => wine.cup) %></td> -->
-        </tr>
-      <% end %>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Dégustation</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
+          <td><%=text_area_tag("wine[#{i}][degustation]", wine.degustation, :class=>'degustation')%></td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>Accords</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
+          <td><%=text_area_tag("wine[#{i}][accords]", wine.accords, :class=>'accords')%></td>
+        <% end %>
+      </tr>
     </table>
     <%= submit_tag("Générer") %>
   <% end %>
