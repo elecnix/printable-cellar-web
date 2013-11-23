@@ -12,7 +12,7 @@ class GenerationController < ApplicationController
     content.sub!(/\$cepage/, escape(wine.cepage))
     content.sub!(/\$pays/, escape(wine.pays))
     content.sub!(/\$millesime/, escape(wine.millesime))
-    content.sub!(/\$boire/, escape(wine.boire))
+    content.sub!(/\$boire/, escape(wine.millesime && wine.boire.to_i > 0 ? wine.millesime.to_i + wine.boire.to_i : 'maintenant'))
     content.sub!(/\$prix/, escape(wine.prix))
     content.sub!(/\$temperature/, escape(wine.temperature))
     content.sub!(/\$accords/, escape(wine.accords))

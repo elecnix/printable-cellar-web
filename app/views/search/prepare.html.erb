@@ -62,10 +62,10 @@
         <% end %>
       </tr>
       <tr>
-        <th>Garder (ans)</th>
+        <th>Garder</th>
         <% sheet.each do |i| %>
           <% wine = @wine_batch.wines[i-1] %>
-          <td><%=text_field_tag("wine[#{i}][boire]", if wine.boire == 0 then "maintenant" else "< #{wine.boire} ans" end, :size => 6)%></td>
+          <td><%=text_field_tag("wine[#{i}][boire]", wine.boire, :size => 4)%> ans</td>
         <% end %>
       </tr>
       <tr>
