@@ -1,3 +1,4 @@
+# encoding: UTF-8
 class Vin
   include ActiveModel::Validations
   include ActiveModel::Conversion
@@ -15,5 +16,9 @@ class Vin
 
   def url
     'http://www.saq.com/webapp/wcs/stores/servlet/SearchDisplay?storeId=20002&catalogId=50000&langId=-2&pageSize=20&beginIndex=0&searchTerm=' + cup.to_s
+  end
+  
+  def rebate_percent
+    (1.0 - (achat / prix)) * 100
   end
 end

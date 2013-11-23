@@ -21,7 +21,7 @@ class GenerationController < ApplicationController
   def replace_verso(wine, content)
     content.sub!(/\$alcool/, escape(wine.alcool))
     content.sub!(/\$degustation/, escape(wine.degustation))
-    content.sub!(/\$achat/, escape(wine.achat))
+    content.sub!(/\$achat/, escape(wine.achat == wine.prix ? '' : wine.achat))
   end
   def replace_tags(wines, content)
     # Remove taste tags that do not match the current wine

@@ -9,6 +9,8 @@ class SearchController < ApplicationController
       @wines = params[:q].gsub(/\r\n?/, " ").gsub(/\s+/, ' ').split(' ').map { |code| get_wine(code) }
       @wine_batch = WineBatch.new
       @wine_batch.wines = @wines
+      @rebate = params[:rebate].to_i
+      @wine_batch.apply_rebate(@rebate)
       render :action => "prepare"
     end
   end
@@ -64,11 +66,11 @@ class SearchController < ApplicationController
     cart = page.at_css('.product-add-to-cart-meta')
     cart.css('.hors-ecran, .rabais-etoile').map { |node| node.remove() }
     if (cart.at_css('.price-rebate'))
-      attributes[:prix] = cart.at_css('.initialprice').content.strip
-      attributes[:achat] = cart.at_css('.price-rebate').content.strip
+      attributes[:prix] = cart.at_css('.initialprice').content.strip.gsub(/,/, '.').gsub(/[$\s]/, '').to_f
+      attributes[:achat] = cart.at_css('.price-rebate').content.strip.gsub(/,/, '.').gsub(/[$\s]/, '').to_f
     else
-      attributes[:prix] = cart.at_css('.price').text().strip
-      attributes[:achat] = ''
+      attributes[:prix] = cart.at_css('.price').text().strip.gsub(/,/, '.').gsub(/[$\s]/, '').to_f
+      attributes[:achat] = attributes[:prix]
     end
     return Vin.new(attributes)
   end
