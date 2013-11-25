@@ -2,7 +2,7 @@
 class Vin
   include ActiveModel::Validations
   include ActiveModel::Conversion
-  attr_accessor :cup, :nom, :saq, :pays, :cepage, :alcool, :region, :millesime, :pastille, :degustation, :garde, :boire, :temperature, :prix, :accords, :achat, :quantite
+  attr_accessor :cup, :nom, :saq, :pays, :cepage, :alcool, :region, :millesime, :pastille, :degustation, :garde, :boire, :temperature, :prix, :accords, :achat, :date_achat, :quantite
   
   def initialize(attributes = {})
     attributes.each do |name, value|

@@ -55,6 +55,12 @@
           <!-- <td>text_field_tag("wine[#{i}][quantite]", wine.quantite, :size => 3)</td> -->
       </tr>
       <tr>
+        <th>Date</th>
+        <% sheet.each do |i| %>
+          <td><%=text_field_tag("wine[#{i}][date_achat]", Time.now.strftime('%Y-%m-%d'), :size => 20)%></td>
+        <% end %>
+      </tr>
+      <tr>
         <th>Cépage</th>
         <% sheet.each do |i| %>
           <% wine = @wine_batch.wines[i-1] %>
