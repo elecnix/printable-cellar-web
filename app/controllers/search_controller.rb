@@ -10,7 +10,7 @@ class SearchController < ApplicationController
       @wine_batch = WineBatch.new
       @wine_batch.wines = @wines
       @rebate = params[:rebate].to_i
-      @wine_batch.apply_rebate(@rebate)
+      @wine_batch.apply_rebate(@rebate) if @rebate > 0
       render :action => "prepare"
     end
   end

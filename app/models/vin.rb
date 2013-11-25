@@ -19,6 +19,7 @@ class Vin
   end
   
   def rebate_percent
+    return 0 if achat.nil? || prix.nil?
     (1.0 - (achat / prix)) * 100
   end
 end
