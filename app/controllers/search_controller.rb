@@ -40,7 +40,7 @@ class SearchController < ApplicationController
     page = get_page(cup)
     unless page.css('.product-description-title').first
       logger.error("No product description found for " + cup)
-      return Vin.new
+      return Vin.new(:cup => cup)
     end
     details = Hash[page.css("#details/ul/li/div").map { |node| node.content.gsub(/\r\n?/, " ").gsub(/\s+/, ' ').strip }.each_slice(2).to_a]
     # {"Pays"=>"France", "Région"=>"Sud-Ouest", "Appellation d'origine"=>"Cahors", "Désignation réglementée"=>"AOC", "Producteur"=>"...", "Cépage(s)"=>"Malbec 100 %", "couleur"=>"Rouge", "Format"=>"750 ml  ", "Degré d'alcool"=>"13 %", "Type de bouchon"=>"Liège", "Type de contenant"=>"Verre"}
