@@ -94,7 +94,7 @@ class GenerationController < ApplicationController
       wine_sheet.each do |wine|
         if wine.cup
           zipfile.get_output_stream("Pictures/#{wine.cup}.png") { |f|
-            qr = RQRCode::QRCode.new(wine.cup, :size => 1, :level => :l)
+            qr = RQRCode::QRCode.new(wine.cup, :size => 4, :level => :h)
             qr.to_img.resize(200, 200).save(f)
           }
         end
