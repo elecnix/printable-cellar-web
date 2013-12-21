@@ -49,7 +49,7 @@
         <th>Prix Payé</th>
         <% sheet.each do |i| %>
           <% wine = @wine_batch.wines[i-1] %>
-          <td><%=text_field_tag("wine[#{i}][achat]", number_to_currency_qc_fr(wine.achat) + (wine.rebate_percent > 0 ? ' (-' + number_to_percentage(wine.rebate_percent, :precision=>0) + ')' : ''))%></td>
+          <td><%=text_field_tag("wine[#{i}][achat]", (wine.achat != nil) ? (number_to_currency_qc_fr(wine.achat) + (wine.rebate_percent > 0 ? ' (-' + number_to_percentage(wine.rebate_percent, :precision=>0) + ')' : '')) : '')%></td>
         <% end %>
         <!-- <th>Quantité</th> -->
           <!-- <td>text_field_tag("wine[#{i}][quantite]", wine.quantite, :size => 3)</td> -->
