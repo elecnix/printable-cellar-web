@@ -18,6 +18,15 @@
         <% end %>
       </tr>
       <tr>
+        <th>Code SAQ</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
+          <td>
+            <a href='<%=wine.url%>'><%=wine.saq%></a>
+          </td>
+        <% end %>
+      </tr>
+      <tr>
         <th>Nom</th>
         <% sheet.each do |i| %>
           <% wine = @wine_batch.wines[i-1] %>
