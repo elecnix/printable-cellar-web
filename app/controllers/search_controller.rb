@@ -6,7 +6,7 @@ class SearchController < ApplicationController
 
   def index
     if params[:q]
-      @wines = params[:q].gsub(/\r\n?/, " ").gsub(/\s+/, ' ').split(' ').map { |code| get_wine(code) }
+      @wines = params[:q].gsub(/\r\n?/, " ").gsub(/\s+/, ' ').split(' ').map { |code| get_wine(normalize_code(code)) }
       @wine_batch = WineBatch.new
       @wine_batch.wines = @wines
       @rebate = params[:rebate].to_i
@@ -16,6 +16,14 @@ class SearchController < ApplicationController
   end
 
   private
+
+  def normalize_code(code)
+    # A UPC barcode is also an EAN-13 barcode with the first digit set to zero.
+    # EAN-13: "LLLLLLRRRRRRX"
+    # Some UPC codes have a leading zero that is not scanned, so: 99988071096 => 00099988071096
+    # Le code SAQ comporte 8 chiffres?
+    code.rjust(13, '0') if code.length > 8
+  end
 
   def get_page(cup)
     cached_page = CachedPage.where(key: cup).order("created_at DESC").limit(1).first
