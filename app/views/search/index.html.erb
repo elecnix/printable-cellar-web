@@ -1,5 +1,5 @@
 <h1>Générateur d'étiquettes</h1>
-<%= form_tag({}, :method => "get") do %>
+<%= form_tag({}, :method => "post") do %>
   <p><%= label_tag(:q, "Coller les codes CUP ou SAQ ici:") %></p>
   <textarea name="q"></textarea>
   <div>Appliquer un rabais de <input type="text" name="rebate" value="0" style="width: 3em; text-align: right;">%</div>
