@@ -54,8 +54,10 @@ class SearchController < ApplicationController
     # {"Pays"=>"France", "Région"=>"Sud-Ouest", "Appellation d'origine"=>"Cahors", "Désignation réglementée"=>"AOC", "Producteur"=>"...", "Cépage(s)"=>"Malbec 100 %", "couleur"=>"Rouge", "Format"=>"750 ml  ", "Degré d'alcool"=>"13 %", "Type de bouchon"=>"Liège", "Type de contenant"=>"Verre"}
     temp_spacer = page.css('#tasting/div/p/span').first
     garde = page.css('#tasting/div/table').first
+    cup_result = page.at_css('.product-description-code-cpu').next_sibling.content.strip
+    cup_result = cup if cup_result.empty?
     attributes = {
-      :cup => cup,
+      :cup => cup_result,
       :nom => page.at_css('.product-description-title').content.strip,
       :saq => page.at_css('.product-description-code-saq').next_sibling.content.strip,
       :pays => page.at_css('.product-page-subtitle').content.strip,
