@@ -13,8 +13,8 @@ class GenerationController < ApplicationController
     content.sub!(/\$pays/, escape(wine.pays))
     content.sub!(/\$millesime/, escape(wine.millesime))
     content.sub!(/\$boire/, escape(wine.millesime && wine.boire.to_i > 0 ? wine.millesime.to_i + wine.boire.to_i : 'maintenant'))
-    content.sub!(/\$prix/, escape(wine.prix))
-    content.sub!(/\$achat/, escape(wine.achat == wine.prix ? '' : wine.achat))
+    content.sub!(/\$prix/, escape(wine.achat == wine.prix ? '' : wine.prix))
+    content.sub!(/\$achat/, escape([wine.prix, wine.achat].min))
     content.sub!(/\$accords/, escape(wine.accords))
     content.sub!(/10000000000000CB000000CB4F4C2532.png/, "#{wine.cup || 'qr-empty'}.png")
   end
