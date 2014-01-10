@@ -22,7 +22,11 @@ class SearchController < ApplicationController
     # EAN-13: "LLLLLLRRRRRRX"
     # Some UPC codes have a leading zero that is not scanned, so: 99988071096 => 00099988071096
     # Le code SAQ comporte 8 chiffres?
-    code.rjust(13, '0') if code.length > 8
+    if code.length > 8
+      code.rjust(13, '0')
+    else
+      code
+    end
   end
 
   def get_page(cup)
