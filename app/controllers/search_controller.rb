@@ -11,7 +11,11 @@ class SearchController < ApplicationController
       @wine_batch.wines = @wines
       @rebate = params[:rebate].to_i
       @wine_batch.apply_rebate(@rebate) if @rebate > 0
-      render :action => "prepare"
+      if params[:export]
+        render :action => "export"
+      else
+        render :action => "prepare"
+      end
     end
   end
 

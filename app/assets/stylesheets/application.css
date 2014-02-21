@@ -78,6 +78,10 @@ input:focus, textarea:focus{
   width: 45px;
   padding-left: 10px;
 }
+.taste-tag-vs {
+  width: 20px;
+  padding-left: 10px;
+}
 textarea.degustation, textarea.accords {
   width: 20em;
   height: 17em;

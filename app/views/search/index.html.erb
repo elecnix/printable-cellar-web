@@ -3,6 +3,7 @@
   <p><%= label_tag(:q, "Coller les codes CUP ou SAQ ici:") %></p>
   <textarea name="q"></textarea>
   <div>Appliquer un rabais de <input type="text" name="rebate" value="0" style="width: 3em; text-align: right;">%</div>
+  <div><label><input type="checkbox" name="export">Afficher en mode tabulaire</label></div>
   <div><%= submit_tag("Soumettre") %></div>
 <% end %>
 

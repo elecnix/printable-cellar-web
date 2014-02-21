@@ -1,0 +1,54 @@
+<h1>Exportation</h1>
+<div>Trouvé <%=@wine_batch.wines.size%> vins. <a href='/'>Nouvelle recherche</a></div>
+<% if @rebate > 0 %>
+  <div>Rabais de <%=@rebate%>% appliqué à tout.</div>
+  <div>Attention! N'inclue pas les étiquettes-rabais. Vérifiez votre facture.</div>
+<% end %>
+<%= form_tag('/generate', :method => "post") do %>
+  <table>
+    <tr>
+      <th>CUP</th>
+      <th>Code SAQ</th>
+      <th>Nom</th>
+      <th>Millésime</th>
+      <th>Pays</th>
+      <th>Prix</th>
+      <th>Prix Payé</th>
+      <th>Date</th>
+      <th>Cépage</th>
+      <th>Garder (années)</th>
+      <th>Alcool</th>
+      <th>Service</th>
+      <th>Pastille</th>
+      <th>Dégustation</th>
+      <th>Accords</th>
+    </tr>
+    <% @wine_batch.wines.each do |wine| %>
+      <tr>
+        <td>
+          <a href='<%=wine.url%>'><%=wine.cup%></a>
+        </td>
+        <td>
+          <a href='<%=wine.url%>'><%=wine.saq%></a>
+        </td>
+        <td><%=text_field_tag("wine[nom]", wine.nom, :size => 30)%></td>
+        <td><%=text_field_tag("wine[millesime]", wine.millesime, :size => 6)%></td>
+        <td><%=text_field_tag("wine[pays]", wine.pays, :size => 10)%></td>
+        <td><%=text_field_tag("wine[prix]", number_to_currency_qc_fr(wine.prix), :size => 6)%></td>
+        <td><%=text_field_tag("wine[achat]", (wine.achat != nil) ? (number_to_currency_qc_fr(wine.achat) + (wine.rebate_percent > 0 ? ' (-' + number_to_percentage(wine.rebate_percent, :precision=>0) + ')' : '')) : '')%></td>
+        <td><%=text_field_tag("wine[date_achat]", Time.now.strftime('%Y-%m-%d'), :size => 20)%></td>
+        <td><%=text_field_tag("wine[cepage]", wine.cepage.to_s.gsub(/.50.%/, ',').gsub(/ %/, '%'), :size => 20)%></td>
+        <td><%=text_field_tag("wine[boire]", wine.boire, :size => 4)%></td>
+        <td><%=text_field_tag("wine[alcool]", wine.alcool, :size => 5)%></td>
+        <td><%=text_field_tag("wine[temperature]", wine.temperature, :size => 7)%></td>
+        <td>
+          <%=taste_tag(wine.pastille, 'vs')%>
+          <%=hidden_field_tag("wine[pastille]", wine.pastille)%>
+        </td>
+        <td><%=text_field_tag("wine[degustation]", wine.degustation, :class=>'degustation')%></td>
+        <td><%=text_field_tag("wine[accords]", wine.accords, :class=>'accords')%></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>
+
