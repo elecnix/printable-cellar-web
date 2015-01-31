@@ -22,4 +22,8 @@ class Vin
     return 0 if achat.nil? || prix.nil?
     (1.0 - (achat / prix)) * 100
   end
+  
+  def flatten
+    (1.upto quantite.to_i).map { v = dup; v.quantite = 1; v }
+  end
 end

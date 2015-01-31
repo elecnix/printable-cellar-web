@@ -10,6 +10,7 @@
       <th>CUP</th>
       <th>Code SAQ</th>
       <th>Nom</th>
+      <th>Quantité</th>
       <th>Millésime</th>
       <th>Pays</th>
       <th>Prix</th>
@@ -34,6 +35,7 @@
           <a href='<%=wine.url%>'><%=wine.saq%></a>
         </td>
         <td><%=text_field_tag("wine[#{i}][nom]", wine.nom, :size => 30)%></td>
+        <td><%=text_field_tag("wine[#{i}][quantite]", wine.quantite, :size => 4)%></td>
         <td><%=text_field_tag("wine[#{i}][millesime]", wine.millesime, :size => 6)%></td>
         <td><%=text_field_tag("wine[#{i}][pays]", wine.pays, :size => 10)%></td>
         <td><%=text_field_tag("wine[#{i}][prix]", number_to_currency_qc_fr(wine.prix), :size => 6)%></td>

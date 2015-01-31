@@ -47,7 +47,7 @@ class GenerationController < ApplicationController
 
   def new
     # Create an array with 9 wines (full sheet)
-    wine_sheet = params['wine'].values.map { |wine_attributes| Vin.new(wine_attributes) }
+    wine_sheet = params['wine'].values.inject([]) { |sheet, wine_attributes| sheet + Vin.new(wine_attributes).flatten }
     # Fill the rest of the page with empty wine info
     wine_sheet.fill(wine_sheet.length, 9) { |i| Vin.new }
 

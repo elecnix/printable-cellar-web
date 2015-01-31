@@ -7,8 +7,7 @@ class SearchController < ApplicationController
   def index
     if params[:q]
       @wines = params[:q].gsub(/\r\n?/, " ").gsub(/\s+/, ' ').split(' ').map { |code| get_wine(normalize_code(code)) }
-      @wine_batch = WineBatch.new
-      @wine_batch.wines = @wines
+      @wine_batch = @wines.inject(WineBatch.new) { |batch, wine| batch << wine }
       @rebate = params[:rebate].to_i
       @wine_batch.apply_rebate(@rebate) if @rebate > 0
       if params[:export]
