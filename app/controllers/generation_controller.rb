@@ -1,6 +1,7 @@
 # encoding: utf-8
 require 'rqrcode_png'
 require 'zip/zip'
+require 'prawn'
 
 class GenerationController < ApplicationController
 
