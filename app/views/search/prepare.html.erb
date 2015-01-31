@@ -34,6 +34,13 @@
         <% end %>
       </tr>
       <tr>
+        <th>Quantité</th>
+        <% sheet.each do |i| %>
+          <% wine = @wine_batch.wines[i-1] %>
+          <td><%=text_field_tag("wine[#{i}][quantite]", wine.quantite, :size => 6)%></td>
+        <% end %>
+      </tr>
+      <tr>
         <th>Millésime</th>
         <% sheet.each do |i| %>
           <% wine = @wine_batch.wines[i-1] %>
