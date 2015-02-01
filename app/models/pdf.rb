@@ -2,7 +2,7 @@
 require "prawn/measurement_extensions"
 
 class Pdf
-  def self.generate(filename)
+  def self.generate(filename, wines)
     label_height = 300
     label_width = 180
     col_count = 3
@@ -10,19 +10,7 @@ class Pdf
     margin = 10
     box_width = label_width - 2 * margin
     box_height = 12
-    wine = Vin.new(
-      :nom => 'Redwood Creek Frei Brothers',
-      :millesime => "2015",
-      :cepage => "Cabernet-sauvignon",
-      :region => "États-Unis",
-      :pastille => "Aromatique et souple",
-      :degustation => "Vin arborant une couleur rouge cerise de bonne intensité. Nez assez puissant dégageant des effluves de cassonade, de pâtisserie, de confiture de fraises et de framboise. Ce rouge laisse percevoir une agréable fraîcheur et est pourvu de tannins enrobés. Il révèle une texture souple qui précède une finale assez persistante.",
-      :boire => "maintenant",
-      :temperature => "14 - 16°C",
-      :prix => "16,20 $",
-      :accords => "Panini au poulet grillé et pancetta croustillante avec mayonnaise aux tomates séchées. Rouleaux de printemps au canard confit. Côtes levées de dos à la bière noire et au miel. Steaks d'entrecôte à la sauce bordelaise",
-      :achat => "12,95 $ (-20%)",
-      :date_achat => "2015-01")
+    wine = wines[0]
     Prawn::Document.generate(filename) {
       dash(3, :space => 2)
       stroke_color "aaaaaa"
@@ -42,7 +30,7 @@ class Pdf
                 }
                 line_no = 0
                 text_box wine.cepage, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
-                text_box wine.region, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
+                text_box wine.region || '', :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
                 text_box wine.millesime, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width / 2, :height => box_height, :overflow => :shrink_to_fit
                 text_box wine.achat, :at => [box_width / 2 + margin / 2, label_height - margin * 2 - box_height * line_no], :width => box_width / 2, :height => box_height, :overflow => :shrink_to_fit, :align => :right
                 text_box wine.boire, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
