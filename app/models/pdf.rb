@@ -36,10 +36,13 @@ class Pdf
                     line_no = 0
                     text_box wine.cepage, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
                     text_box wine.region || '', :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
-                    text_box wine.millesime, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width / 2, :height => box_height, :overflow => :shrink_to_fit
-                    text_box wine.achat, :at => [box_width / 2 + margin / 2, label_height - margin * 2 - box_height * line_no], :width => box_width / 2, :height => box_height, :overflow => :shrink_to_fit, :align => :right
+                    font("Helvetica", :style => :bold, :size => 10) {
+                      text_box wine.millesime, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width / 2, :height => box_height, :overflow => :shrink_to_fit
+                    }
+                    text_box wine.date_achat, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width / 2, :height => box_height, :overflow => :shrink_to_fit
+                    text_box wine.prix, :at => [box_width / 2 + margin / 2, label_height - margin * 2 - box_height * line_no], :width => box_width / 2, :height => box_height, :overflow => :shrink_to_fit, :align => :right
                     boire = (wine.millesime && wine.boire.to_i > 0 ? (wine.millesime.to_i + wine.boire.to_i).to_s + (wine.millesime.to_i > 0 ? '' : ' ans') : (wine.millesime.nil? ? '' : 'maintenant'))
-                    text_box boire, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
+                    text_box boire, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width / 4, :height => box_height, :overflow => :shrink_to_fit
                     font("Helvetica", :size => 9) {
                       text_box wine.accords, :at => [0, 90], :width => box_width + margin / 2, :height => 200, :overflow => :shrink_to_fit
                     }
@@ -78,6 +81,8 @@ class Pdf
                 stroke_bounds
                 font("Helvetica", :size => 10) {
                   bounding_box([margin, label_height - margin], :width => box_width, :height => label_height - 2 * margin) {
+                    line_no = 0
+                    text_box wine.achat, :at => [box_width / 2 + margin / 2, label_height - margin * 2 - box_height * line_no], :width => box_width / 2, :height => box_height, :overflow => :shrink_to_fit, :align => :right
                     font("Helvetica", :size => 9) {
                       text_box wine.degustation, :at => [0, 120], :width => box_width + margin / 2, :height => 200, :overflow => :shrink_to_fit
                     }
