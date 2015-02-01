@@ -3,7 +3,7 @@ require "prawn/measurement_extensions"
 
 class Pdf
   def self.generate(filename, wines)
-    label_height = 300
+    label_height = 275
     label_width = 180
     col_count = 3
     row_count = 2
@@ -41,7 +41,7 @@ class Pdf
                     boire = (wine.millesime && wine.boire.to_i > 0 ? (wine.millesime.to_i + wine.boire.to_i).to_s + (wine.millesime.to_i > 0 ? '' : ' ans') : (wine.millesime.nil? ? '' : 'maintenant'))
                     text_box boire, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
                     font("Helvetica", :size => 9) {
-                      text_box wine.accords, :at => [0, 120], :width => box_width + margin / 2, :height => 200, :overflow => :shrink_to_fit
+                      text_box wine.accords, :at => [0, 90], :width => box_width + margin / 2, :height => 200, :overflow => :shrink_to_fit
                     }
                   }
                 }
@@ -56,13 +56,13 @@ class Pdf
                   qr_file = "#{wine.cup}.png"
                   qr = RQRCode::QRCode.new(wine.cup, :size => 4, :level => :h)
                   qr.to_img.resize(200, 200).save(qr_file)
-                  image qr_file, :at => [margin, 180], :width => 15.mm
+                  image qr_file, :at => [margin, 150], :width => 15.mm
                 end
                 # Pastille
                 if wine.pastille
                   tag_width = 15.mm
                   tag = TasteTag::MAPPINGS[wine.pastille]
-                  image "public/images/tags/dark/#{tag[0]}_s.png", :at => [box_width - tag_width, 180], :width => tag_width if tag
+                  image "public/images/pastilles/#{tag[0]}.png", :at => [box_width - tag_width + margin, 150], :width => tag_width if tag
                 end
               }
             end
