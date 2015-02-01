@@ -47,61 +47,12 @@ class GenerationController < ApplicationController
   end
 
   def new
-    # Create an array with 9 wines (full sheet)
-    wine_sheet = params['wine'].values.inject([]) { |sheet, wine_attributes| sheet + Vin.new(wine_attributes).flatten }
-    # Fill the rest of the page with empty wine info
-    wine_sheet.fill(wine_sheet.length, 9) { |i| Vin.new }
-
-    # Load LibreOffice document (un-zip)
-    src_odg = "app/printable-cellar-legal-fr.odg"
+#    wine_sheet = params['wine'].values.inject([]) { |sheet, wine_attributes| sheet + Vin.new(wine_attributes).flatten }
     date = DateTime.now.strftime('%F')
     random = SecureRandom.urlsafe_base64[0..7]
-    tmp_file = Rails.root.join('tmp', "printable-cellar-" + date + "-" + random + ".odg")
-    puts "Copying to #{tmp_file}"
-    puts `cp "#{src_odg}" "#{tmp_file}"`
-    content = ""
-    manifest = ""
-    Zip::ZipFile.open(src_odg, false) { |zipfile|
-      puts "Replacing..."
-      content = zipfile.read("content.xml").force_encoding('utf-8')
-      manifest = zipfile.read("META-INF/manifest.xml").force_encoding('utf-8')
-    }
-    puts "content.xml has #{content.size}"
-
-    # Perform replacement in the document
-    wine_sheet.each_slice(3) do |row_wines|
-      row_wines.each { |wine| replace_recto(wine, content) }
-      row_wines.reverse_each { |wine| replace_verso(wine, content) }
-    end
-    replace_tags(wine_sheet, content)
-
-    def append_manifest(manifest_xml, picture)
-      manifest_xml.sub!(/(<\/manifest:manifest>)/, "<manifest:file-entry manifest:full-path=\"Pictures/#{picture}\" manifest:media-type=\"\"/>\\1")
-    end
-    
-    # Add QR codes files to Jar manifest
-    wine_sheet.each do |wine|
-      if wine.cup
-        append_manifest(manifest, "#{wine.cup}.png")
-      end
-    end
-    append_manifest(manifest, "qr-empty.png")
-
-    # Re-zip document and send it
-    Zip::ZipFile.open(tmp_file, false) { |zipfile|
-      zipfile.get_output_stream("content.xml") { |f| f.puts content }
-      zipfile.get_output_stream("META-INF/manifest.xml") { |f| f.puts manifest }
-      zipfile.add("Pictures/qr-empty.png", "app/qr-empty.png") 
-      wine_sheet.each do |wine|
-        if wine.cup
-          zipfile.get_output_stream("Pictures/#{wine.cup}.png") { |f|
-            qr = RQRCode::QRCode.new(wine.cup, :size => 4, :level => :h)
-            qr.to_img.resize(200, 200).save(f)
-          }
-        end
-      end
-    }
-    puts "Send..."
+    tmp_file = Rails.root.join('tmp', "printable-cellar-" + date + "-" + random + ".pdf")
+    puts "Generating to #{tmp_file}"
+    Pdf.generate(tmp_file)
     send_file(tmp_file)
     # TODO remove temporary file
   end

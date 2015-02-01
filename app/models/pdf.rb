@@ -2,12 +2,11 @@
 require "prawn/measurement_extensions"
 
 class Pdf
-  def self.generate
+  def self.generate(filename)
     label_height = 300
     label_width = 180
     col_count = 3
     row_count = 2
-    # PDF point = 1/72 inch
     margin = 10
     box_width = label_width - 2 * margin
     box_height = 12
@@ -24,7 +23,7 @@ class Pdf
       :accords => "Panini au poulet grillé et pancetta croustillante avec mayonnaise aux tomates séchées. Rouleaux de printemps au canard confit. Côtes levées de dos à la bière noire et au miel. Steaks d'entrecôte à la sauce bordelaise",
       :achat => "12,95 $ (-20%)",
       :date_achat => "2015-01")
-    Prawn::Document.generate("generate.pdf") {
+    Prawn::Document.generate(filename) {
       dash(3, :space => 2)
       stroke_color "aaaaaa"
       self.line_width = 0.5
