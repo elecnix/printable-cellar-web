@@ -8,6 +8,9 @@ class Pdf
     col_count = 3
     row_count = 2
     # PDF point = 1/72 inch
+    margin = 10
+    box_width = label_width - 2 * margin
+    box_height = 12
     wine = Vin.new(
       :nom => 'Redwood Creek Frei Brothers',
       :millesime => "2015",
@@ -22,21 +25,18 @@ class Pdf
       :achat => "12,95 $ (-20%)",
       :date_achat => "2015-01")
     Prawn::Document.generate("generate.pdf") {
+      dash(3, :space => 2)
+      stroke_color "aaaaaa"
+      self.line_width = 0.5
       (0.upto(row_count - 1)).each { |row|
         (0.upto(col_count - 1)).each { |col|
           bounding_box([label_width * col, (row_count * label_height) - row * label_height], :width => label_width, :height => label_height) {
-            dash(3, :space => 2)
-            stroke_color "aaaaaa"
-            self.line_width = 0.5
             stroke_bounds
             stroke {
               r = 27.mm / 2
               circle [label_width / 2, label_height - r - 60], r
             }
             font("Helvetica", :size => 10) {
-              margin = 10
-              box_width = label_width - 2 * margin
-              box_height = 12
               bounding_box([margin, label_height - margin], :width => box_width, :height => label_height - 2 * margin) {
                 font("Helvetica", :style => :bold, :size => 12) {
                   text_box wine.nom, :at => [0, label_height - margin * 2], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
@@ -56,6 +56,21 @@ class Pdf
               float {
                 text_box "V2.0  © Nicolas Marchildon 2015,  © Société des alcools du Québec, Montréal, 2007, 2010",
                   :at => [5, -2], :width => label_height, :height => 6, :overflow => :shrink_to_fit
+              }
+            }
+          }
+        }
+      }
+      start_new_page
+      (0.upto(row_count - 1)).each { |row|
+        (0.upto(col_count - 1)).each { |col|
+          bounding_box([label_width * col, (row_count * label_height) - row * label_height], :width => label_width, :height => label_height) {
+            stroke_bounds
+            font("Helvetica", :size => 10) {
+              bounding_box([margin, label_height - margin], :width => box_width, :height => label_height - 2 * margin) {
+                font("Helvetica", :size => 9) {
+                  text_box wine.degustation, :at => [0, 120], :width => box_width + margin / 2, :height => 200, :overflow => :shrink_to_fit
+                }
               }
             }
           }
