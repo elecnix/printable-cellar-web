@@ -15,12 +15,14 @@ class Pdf
       dash(3, :space => 2)
       stroke_color "aaaaaa"
       self.line_width = 0.5
-      page_index = 0
-      (1.upto(wines.length/labels_per_page)).each {
-        start_new_page unless page_index == 0
-        (0.upto(row_count - 1)).each { |row|
-          (0.upto(col_count - 1)).each { |col|
-            wine = wines[labels_per_page * page_index + ((row) * col_count) + col]
+      sheet_index = 0
+      sheet_count = (wines.length.to_f / labels_per_page).ceil
+      Rails.logger.info("Wines: #{wines.length}, pages: #{sheet_count}")
+      1.upto(sheet_count).each {
+        start_new_page if sheet_index > 0
+        0.upto(row_count - 1).each { |row|
+          0.upto(col_count - 1).each { |col|
+            wine = wines[labels_per_page * sheet_index + ((row) * col_count) + col]
             if wine
               bounding_box([label_width * col, (row_count * label_height) - row * label_height], :width => label_width, :height => label_height) {
                 stroke_bounds
@@ -74,7 +76,7 @@ class Pdf
         start_new_page
         (0.upto(row_count - 1)).each { |row|
           (0.upto(col_count - 1)).each { |col|
-            wine = wines[labels_per_page * page_index + ((row) * col_count) + col]
+            wine = wines[labels_per_page * sheet_index + ((row) * col_count) + col]
             if wine
               col = col_count - col - 1
               bounding_box([label_width * col, (row_count * label_height) - row * label_height], :width => label_width, :height => label_height) {
@@ -92,8 +94,7 @@ class Pdf
             end
           }
         }
-        start_new_page
-        page_index += 1
+        sheet_index += 1
       }
     }
   end
