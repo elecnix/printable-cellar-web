@@ -38,7 +38,8 @@ class Pdf
                     text_box wine.region || '', :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
                     text_box wine.millesime, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width / 2, :height => box_height, :overflow => :shrink_to_fit
                     text_box wine.achat, :at => [box_width / 2 + margin / 2, label_height - margin * 2 - box_height * line_no], :width => box_width / 2, :height => box_height, :overflow => :shrink_to_fit, :align => :right
-                    text_box wine.boire, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
+                    boire = (wine.millesime && wine.boire.to_i > 0 ? (wine.millesime.to_i + wine.boire.to_i).to_s + (wine.millesime.to_i > 0 ? '' : ' ans') : (wine.millesime.nil? ? '' : 'maintenant'))
+                    text_box boire, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
                     font("Helvetica", :size => 9) {
                       text_box wine.accords, :at => [0, 120], :width => box_width + margin / 2, :height => 200, :overflow => :shrink_to_fit
                     }
@@ -59,6 +60,7 @@ class Pdf
           (0.upto(col_count - 1)).each { |col|
             wine = wines[labels_per_page * page_index + ((row) * col_count) + col]
             if wine
+              col = col_count - col - 1
               bounding_box([label_width * col, (row_count * label_height) - row * label_height], :width => label_width, :height => label_height) {
                 stroke_bounds
                 font("Helvetica", :size => 10) {
