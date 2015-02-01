@@ -12,7 +12,6 @@ gem 'pg'
 gem 'mechanize'
 gem 'rqrcode_png'
 #gem 'debugger'
-gem 'rubyzip'
 gem 'prawn'
 
 # Gems used only for assets and not required

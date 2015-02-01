@@ -103,7 +103,6 @@ GEM
     rqrcode_png (0.1.1)
       chunky_png
       rqrcode
-    rubyzip (0.9.9)
     sass (3.2.9)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
@@ -140,6 +139,5 @@ DEPENDENCIES
   prawn
   rails (= 3.2.11)
   rqrcode_png
-  rubyzip
   sass-rails (~> 3.2.3)
   uglifier (>= 1.0.3)

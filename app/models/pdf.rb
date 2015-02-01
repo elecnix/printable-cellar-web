@@ -13,7 +13,7 @@ class Pdf
     box_height = 12
     Prawn::Document.generate(filename) {
       dash(3, :space => 2)
-      #stroke_color "aaaaaa"
+      stroke_color "aaaaaa"
       self.line_width = 0.5
       sheet_index = 0
       sheet_count = (wines.length.to_f / labels_per_page).ceil
