@@ -13,7 +13,7 @@ class Pdf
     box_height = 12
     Prawn::Document.generate(filename) {
       dash(3, :space => 2)
-      stroke_color "aaaaaa"
+      #stroke_color "aaaaaa"
       self.line_width = 0.5
       sheet_index = 0
       sheet_count = (wines.length.to_f / labels_per_page).ceil
@@ -37,7 +37,7 @@ class Pdf
                     }
                     line_no = 0
                     text_box wine.cepage, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
-                    text_box wine.region || '', :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
+                    text_box wine.pays || '', :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width, :height => box_height, :overflow => :shrink_to_fit
                     font("Helvetica", :style => :bold, :size => 10) {
                       text_box wine.millesime, :at => [0, label_height - margin * 2 - box_height * line_no += 1], :width => box_width / 2, :height => box_height, :overflow => :shrink_to_fit
                     }
