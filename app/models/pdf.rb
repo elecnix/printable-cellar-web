@@ -51,6 +51,19 @@ class Pdf
                       :at => [5, -2], :width => label_height, :height => 6, :overflow => :shrink_to_fit
                   }
                 }
+                # Code QR
+                if wine.cup
+                  qr_file = "#{wine.cup}.png"
+                  qr = RQRCode::QRCode.new(wine.cup, :size => 4, :level => :h)
+                  qr.to_img.resize(200, 200).save(qr_file)
+                  image qr_file, :at => [margin, 180], :width => 15.mm
+                end
+                # Pastille
+                if wine.pastille
+                  tag_width = 15.mm
+                  tag = TasteTag::MAPPINGS[wine.pastille]
+                  image "public/images/tags/dark/#{tag[0]}_s.png", :at => [box_width - tag_width, 180], :width => tag_width if tag
+                end
               }
             end
           }
