@@ -73,7 +73,7 @@
       <tr>
         <th>Date</th>
         <% sheet.each do |i| %>
-          <td><%=text_field_tag("wine[#{i}][date_achat]", Time.now.strftime('%Y-%m-%d'), :size => 20)%></td>
+          <td><%=text_field_tag("wine[#{i}][date_achat]", Time.now.strftime('%Y-%m'), :size => 20)%></td>
         <% end %>
       </tr>
       <tr>
