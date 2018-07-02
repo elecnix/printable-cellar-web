@@ -141,3 +141,9 @@ DEPENDENCIES
   rqrcode_png
   sass-rails (~> 3.2.3)
   uglifier (>= 1.0.3)
+
+RUBY VERSION
+   ruby 2.0.0p648
+
+BUNDLED WITH
+   1.16.0
