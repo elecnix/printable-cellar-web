@@ -7,6 +7,7 @@
       "required": true
     }
   },
+  "stack": "heroku-16",
   "formation": {
     "worker": {
       "quantity": 1
