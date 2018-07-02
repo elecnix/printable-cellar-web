@@ -78,7 +78,7 @@ GEM
       mini_portile2 (~> 2.3.0)
     ntlm-http (0.1.1)
     pdf-core (0.7.0)
-    pg (1.0.0)
+    pg (0.21.0)
     polyglot (0.3.5)
     prawn (2.2.2)
       pdf-core (~> 0.7.0)
@@ -151,7 +151,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   jquery-rails
   mechanize
-  pg
+  pg (~> 0.11)
   prawn
   rails (= 3.2.11)
   rqrcode_png
