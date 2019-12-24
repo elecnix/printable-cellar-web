@@ -24,6 +24,6 @@ class Vin
   end
   
   def flatten
-    (1.upto quantite.to_i).map { v = dup; v.quantite = 1; v }
+    (1.upto quantite.to_i).map { v = self.clone; v.quantite = 1; v }
   end
 end

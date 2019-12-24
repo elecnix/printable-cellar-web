@@ -1,13 +1,13 @@
 source 'https://rubygems.org'
 
-ruby '2.0.0'
+ruby '2.5.5'
 
 gem 'rails', '3.2.11'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'pg'
+gem 'pg', '~> 0.18'
 
 gem 'mechanize'
 gem 'rqrcode_png'

@@ -33,7 +33,7 @@ class SearchController < ApplicationController
   end
 
   def get_page(cup)
-    cached_page = CachedPage.where(['key = ? and created_at > ?', cup, 1.day.ago]).order("created_at DESC").limit(1).first
+    cached_page = CachedPage.where(['key = ? and created_at > ?', cup, 1.day.ago]).order("created_at DESC").take(1)[0]
     if (cached_page.nil?)
       logger.info "GET SAQ: #{cup}"
       @agent = Mechanize.new
