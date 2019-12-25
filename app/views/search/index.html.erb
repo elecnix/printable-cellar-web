@@ -2,9 +2,28 @@
 <%= form_tag({}, :method => "post") do %>
   <p><%= label_tag(:q, "Coller les codes CUP ou SAQ ici:") %></p>
   <p><a href="https://www.facebook.com/notes/cellier-imprimable/comment-%C3%A7a-marche/552877194815389">Comment ça marche?</a></p>
-  <textarea name="q"></textarea>
+  <textarea name="q" id="codes"></textarea>
   <div>Appliquer un rabais de <input type="text" name="rebate" value="0" style="width: 3em; text-align: right;">%</div>
   <div><label><input type="checkbox" name="export">Afficher en mode tabulaire</label></div>
   <div><%= submit_tag("Soumettre") %></div>
 <% end %>
 
+<script type="text/javascript" src="instascan.min.js"></script>
+<video id="preview"></video>
+<script type="text/javascript">
+  let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+  scanner.addListener('scan', function (content) {
+    console.log(content);
+    codes = document.getElementById("codes");
+    codes.value = codes.value += content;
+  });
+  Instascan.Camera.getCameras().then(function (cameras) {
+    if (cameras.length > 0) {
+      scanner.start(cameras[0]);
+    } else {
+      console.error('No cameras found.');
+    }
+  }).catch(function (e) {
+    console.error(e);
+  });
+</script>
