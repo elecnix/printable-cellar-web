@@ -83,7 +83,6 @@ class Pdf
                   qr_file = "#{wine.cup}.png"
                   qr = RQRCode::QRCode.new(wine.cup, :size => 4, :level => :h)
                   qr.as_png(file: qr_file, size: 200)
-                  #qr.to_img.resize(200, 200).save(qr_file)
                   image qr_file, :at => [margin, 150], :width => 15.mm
                 end
                 # Pastille

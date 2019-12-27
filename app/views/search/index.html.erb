@@ -8,18 +8,43 @@
   <div><%= submit_tag("Soumettre") %></div>
 <% end %>
 
-<script type="text/javascript" src="instascan.min.js"></script>
-<video id="preview"></video>
+<script type="text/javascript" src="instascan.js"></script>
+<video id="preview" width="240" height="160"></video>
 <script type="text/javascript">
-  let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+
+  // All arguments are optional:
+  // * duration of the tone in milliseconds. Default is 500
+  // * frequency of the tone in hertz. default is 440
+  // * volume of the tone. Default is 1, off is 0.
+  // * type of tone. Possible values are sine, square, sawtooth, triangle, and custom. Default is sine.
+  // * callback to use on end of tone
+  function beep(duration, frequency, volume, type, callback) {
+    let audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
+    var oscillator = audioCtx.createOscillator();
+    var gainNode = audioCtx.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    if (volume){gainNode.gain.value = volume;};
+    if (frequency){oscillator.frequency.value = frequency;}
+    if (type){oscillator.type = type;}
+    if (callback){oscillator.onended = callback;}
+    oscillator.start();
+    setTimeout(function(){oscillator.stop()}, (duration ? duration : 500));
+  };
+  let scanner = new Instascan.Scanner({
+    video: document.getElementById('preview'),
+    mirror: false
+  });
   scanner.addListener('scan', function (content) {
     console.log(content);
     codes = document.getElementById("codes");
-    codes.value = codes.value += content;
+    codes.value = codes.value += (content + '\n');
+    beep(200, 860, 1, 'square');
   });
   Instascan.Camera.getCameras().then(function (cameras) {
+    console.log("cameras", cameras)
     if (cameras.length > 0) {
-      scanner.start(cameras[0]);
+      scanner.start(cameras[cameras.length - 1]);
     } else {
       console.error('No cameras found.');
     }

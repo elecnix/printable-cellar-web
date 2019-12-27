@@ -2,8 +2,9 @@
 
 Ceci est une application web en Rails qui sert à générer des étiquettes du Célier imprimable.
 
-Site démo: link:http://printable-cellar.herokuapp.com
+Site démo: http://printable-cellar.herokuapp.com
 
-Code source: link:https://github.com/elecnix/printable-cellar-web
-
-[![Stories in Ready](https://badge.waffle.io/elecnix/printable-cellar-web.png?label=ready)](http://waffle.io/elecnix/printable-cellar-web)
+    bundle install
+    mkdir certificates
+    openssl req -x509 -newkey rsa:4096 -keyout certificates/key.pem -out certificates/cert.pem -days 365
+    bundle exec script/rails server
