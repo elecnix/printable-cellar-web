@@ -15,7 +15,7 @@ class Vin
   end
 
   def url
-    'http://www.saq.com/webapp/wcs/stores/servlet/SearchDisplay?storeId=20002&catalogId=50000&langId=-2&pageSize=20&beginIndex=0&searchTerm=' + cup.to_s
+    'https://www.saq.com/fr/catalogsearch/result/?q=' + cup.to_s
   end
   
   def rebate_percent
